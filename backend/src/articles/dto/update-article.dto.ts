@@ -1,4 +1,4 @@
-import { IsDate, IsISO8601, IsOptional, ValidateIf } from 'class-validator';
+import { IsISO8601, IsOptional, ValidateIf } from 'class-validator';
 
 export class UpdateArticleDto {
   @IsOptional()
