@@ -7,6 +7,12 @@ import { UsersService } from 'src/users/users.service';
 export class UsersController {
   constructor(private userService: UsersService) {}
 
+  @Get('seed')
+  seedUser(): { message: string } {
+    this.userService.seed();
+    return { message: 'seed completed' };
+  }
+
   @Get()
   getUsers(): UserEntity[] {
     return this.userService.getUsers();

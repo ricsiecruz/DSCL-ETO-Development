@@ -4,7 +4,7 @@ import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 
 @Module({
-  imports: [InMemoryDBModule],
+  imports: [InMemoryDBModule.forFeature('users', {})],
   controllers: [UsersController],
   providers: [UsersService],
 })

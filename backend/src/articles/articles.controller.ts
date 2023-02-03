@@ -8,6 +8,12 @@ import { ArticleEntity } from 'src/entities/ArticleEntity';
 export class ArticlesController {
   constructor(private articleService: ArticlesService) {}
 
+  @Get('seed')
+  seed(): { message: string } {
+    this.articleService.seed();
+    return { message: 'seeding completed' };
+  }
+
   @Get()
   getArticles(): ArticleEntity[] {
     return this.articleService.getArticles();
