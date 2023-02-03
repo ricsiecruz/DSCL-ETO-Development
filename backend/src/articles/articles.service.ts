@@ -1,19 +1,20 @@
+import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Article } from 'src/articles/articles.model';
 import { CreateArticleDto } from 'src/articles/dto/create-article.dto';
 import { UpdateArticleDto } from 'src/articles/dto/update-article.dto';
+import { ArticleEntity } from 'src/entities/ArticleEntity';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class ArticlesService {
-  private articles: Article[] = [];
+  constructor(private articleDBService: InMemoryDBService<ArticleEntity>) {}
 
-  getArticles(): Article[] {
-    return this.articles;
+  getArticles(): ArticleEntity[] {
+    return this.articleDBService.getAll();
   }
 
-  createArticle({ userId, title, body }: CreateArticleDto): Article {
-    const article: Article = {
+  createArticle({ userId, title, body }: CreateArticleDto): ArticleEntity {
+    const article: ArticleEntity = {
       id: uuid(),
       userId,
       title,
@@ -21,21 +22,23 @@ export class ArticlesService {
       date: new Date().getTime(),
     };
 
-    this.articles.push(article);
+    this.articleDBService.create(article);
 
     return article;
   }
 
-  getArticleById(id: string): Article {
-    const found = this.articles.find((article) => article.id === id);
+  getArticleById(id: string): ArticleEntity {
+    const found = this.articleDBService.get(id);
+
     if (!found) {
       throw new NotFoundException();
     }
+
     return found;
   }
 
-  updateArticle(id: string, updateArticleDto: UpdateArticleDto): Article {
-    this.getArticleById(id);
+  updateArticle(id: string, updateArticleDto: UpdateArticleDto): ArticleEntity {
+    const article = this.getArticleById(id);
 
     const payload = { ...updateArticleDto };
 
@@ -43,17 +46,13 @@ export class ArticlesService {
       if (!payload[key]) {
         delete payload[key];
       }
+
+      if (key === 'date') {
+        payload[key] = new Date(payload[key]).getTime();
+      }
     }
 
-    this.articles = this.articles.map((article) => {
-      if (article.id === id) {
-        if (payload.date) {
-          payload.date = new Date(payload.date).getTime();
-        }
-        return { ...article, ...payload };
-      }
-      return article;
-    });
+    this.articleDBService.update({ ...article, ...payload });
 
     return this.getArticleById(id);
   }

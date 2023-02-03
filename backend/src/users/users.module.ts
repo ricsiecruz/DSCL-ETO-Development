@@ -1,8 +1,10 @@
+import { InMemoryDBModule } from '@nestjs-addons/in-memory-db';
 import { Module } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 
 @Module({
+  imports: [InMemoryDBModule],
   controllers: [UsersController],
   providers: [UsersService],
 })

@@ -1,25 +1,25 @@
 import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
-import { Article } from 'src/articles/articles.model';
 import { ArticlesService } from 'src/articles/articles.service';
 import { CreateArticleDto } from 'src/articles/dto/create-article.dto';
 import { UpdateArticleDto } from 'src/articles/dto/update-article.dto';
+import { ArticleEntity } from 'src/entities/ArticleEntity';
 
 @Controller('articles')
 export class ArticlesController {
   constructor(private articleService: ArticlesService) {}
 
   @Get()
-  getArticles(): Article[] {
+  getArticles(): ArticleEntity[] {
     return this.articleService.getArticles();
   }
 
   @Post()
-  createArticle(@Body() createArticleDto: CreateArticleDto): Article {
+  createArticle(@Body() createArticleDto: CreateArticleDto): ArticleEntity {
     return this.articleService.createArticle(createArticleDto);
   }
 
   @Get(':id')
-  getArticleById(@Param('id') id: string): Article {
+  getArticleById(@Param('id') id: string): ArticleEntity {
     return this.articleService.getArticleById(id);
   }
 
@@ -27,7 +27,7 @@ export class ArticlesController {
   updateArticle(
     @Param('id') id: string,
     @Body() updateArticleDto: UpdateArticleDto,
-  ): Article {
+  ): ArticleEntity {
     return this.articleService.updateArticle(id, updateArticleDto);
   }
 }
